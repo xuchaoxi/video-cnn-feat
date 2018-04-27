@@ -1,8 +1,12 @@
+'''
+split feature into several sub collections
+'''
 
 import sys
 import os
 import logging
-from constant import *
+from generic_utils import Progbar
+from constant import ROOT_PATH
 from bigfile import BigFile
 
 logger = logging.getLogger(__file__)
@@ -25,12 +29,11 @@ def process(options, collection, featname, sub_collections):
         renamed, vectors = featfile.read(target_img_list)
         assert len(target_img_list) == len(renamed)
 
-        target_feat_dir = os.path.join(rootpath, collect, 'FeatureData', featname)
         if  os.path.exists(target_feat_dir):
             if options.overwrite:
                 logger.info('%s exists! overwrite.', target_feat_dir)
             else:
-                logger.info('%s exists! do nothing.', target_feat_dir)
+                logger.info('%s exists! quit.', target_feat_dir)
                 sys.exit(0)
         else:
             os.makedirs(target_feat_dir)
@@ -38,8 +41,10 @@ def process(options, collection, featname, sub_collections):
         target_id_file = os.path.join(target_feat_dir, 'id.txt')
         fw_feat = open(target_feat_file, 'w')
         fw_id = open(target_id_file, 'w')
+        progbar = Progbar(len(renamed))
         for name, feat in zip(renamed, vectors):
             fw_feat.write('%s %s\n' % (name, ' '.join(['%g'%x for x in feat])))
+            progbar.add(1)
         fw_feat.close()
         fw_id.write(' '.join(target_img_list))
         fw_id.close()
