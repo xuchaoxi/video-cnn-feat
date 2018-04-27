@@ -17,6 +17,7 @@ logger.setLevel(logging.INFO)
 
 def process(options, collection, featname, sub_collections):
     rootpath = options.rootpath
+    set_style = options.set_style
     feat_dir = os.path.join(rootpath, collection, 'FeatureData', featname)
 
     sub_collections = sub_collections.split('@')
@@ -24,7 +25,7 @@ def process(options, collection, featname, sub_collections):
 
     for collect in sub_collections:
         target_feat_dir = os.path.join(rootpath, collect, 'FeatureData', featname)
-        target_img_file = os.path.join(rootpath, collect, 'ImageSets', collect+'.txt')
+        target_img_file = os.path.join(rootpath, collect, set_style, collect+'.txt')
         target_img_list = [line.strip() for line in open(target_img_file)]
         renamed, vectors = featfile.read(target_img_list)
         assert len(target_img_list) == len(renamed)
@@ -57,6 +58,7 @@ def main(argv=None):
     from optparse import OptionParser
     parser = OptionParser(usage="""usage: %prog [options] collection featname [sub_collections]""")
     parser.add_option("--rootpath", default=ROOT_PATH, type="string", help="rootpath (default: %s)" % ROOT_PATH)
+    parser.add_option("--set_style", default="ImageSets", type="string", help="set style (default: ImageSets)")
     parser.add_option("--overwrite", default=0, type="int", help="overwrite existing file (default=0)")
 
     (options, args) = parser.parse_args(argv)

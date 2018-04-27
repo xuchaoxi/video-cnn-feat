@@ -17,8 +17,9 @@ logger.setLevel(logging.INFO)
 
 def process(options, collection, featname, sub_collections):
     rootpath = options.rootpath
+    set_style = options.set_style
     target_feat_dir = os.path.join(rootpath, collection, 'FeatureData', featname)
-    target_img_file = os.path.join(rootpath, collection, 'ImageSets', collection+'.txt')
+    target_img_file = os.path.join(rootpath, collection, set_style, collection+'.txt')
 
     if os.path.exists(target_feat_dir):
         if options.overwrite:
@@ -51,16 +52,8 @@ def process(options, collection, featname, sub_collections):
         fw_id.write(' '.join(img_ids))
 
     if os.path.exists(target_img_file):
-        current_ids = map(str.strip, open(target_img_file).readlines())
-        if len(current_ids) != len(img_ids):
-            logger.info('%s exists! but not match.', target_img_file)
-            if options.overwrite:
-                logger.info('overwrite %s.', target_img_file)
-                with open(target_img_file, 'w') as fw_img:
-                    fw_img.write('\n'.join(img_ids) + '\n')
-            else:
-                logger.info('quit %s.', target_img_file)
-                return 0
+        logger.info('%s exists! quit.', target_img_file)
+        return 0
     else:
         if not os.path.exists(os.path.dirname(target_img_file)):
             os.makedirs(os.path.dirname(target_img_file))
@@ -75,6 +68,7 @@ def main(argv=None):
     from optparse import OptionParser
     parser = OptionParser(usage="""usage: %prog [options] collection featname [sub_collections]""")
     parser.add_option("--rootpath", default=ROOT_PATH, type="string", help="rootpath (default: %s)" % ROOT_PATH)
+    parser.add_option("--set_style", default="ImageSets", type="string", help="set style (default: ImageSets)")
     parser.add_option("--overwrite", default=0, type="int", help="overwrite existing file (default=0)")
 
     (options, args) = parser.parse_args(argv)
