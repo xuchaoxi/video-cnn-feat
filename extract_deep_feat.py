@@ -9,7 +9,7 @@ import time
 import logging
 
 from constant import *
-from generic_utils import Progbar
+from utils.generic_utils import Progbar
 from mxnet_feat_os2 import get_feat_extractor, extract_feature
 
 logger = logging.getLogger(__file__)

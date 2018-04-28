@@ -5,9 +5,9 @@ join several sub collections' features into one large collection feature
 import os
 import sys
 import logging
-from generic_utils import Progbar
 from constant import ROOT_PATH
-from bigfile import BigFile
+from utils.generic_utils import Progbar
+from utils.bigfile import BigFile
 
 logger = logging.getLogger(__file__)
 logging.basicConfig(
@@ -15,9 +15,8 @@ logging.basicConfig(
         datefmt='%d %b %H:%M:%S')
 logger.setLevel(logging.INFO)
 
-def process(options, collection, featname, sub_collections):
+def process(options, collection, featname, sub_collections, set_style):
     rootpath = options.rootpath
-    set_style = options.set_style
     target_feat_dir = os.path.join(rootpath, collection, 'FeatureData', featname)
     target_img_file = os.path.join(rootpath, collection, set_style, collection+'.txt')
 
@@ -68,15 +67,14 @@ def main(argv=None):
     from optparse import OptionParser
     parser = OptionParser(usage="""usage: %prog [options] collection featname [sub_collections]""")
     parser.add_option("--rootpath", default=ROOT_PATH, type="string", help="rootpath (default: %s)" % ROOT_PATH)
-    parser.add_option("--set_style", default="ImageSets", type="string", help="set style (default: ImageSets)")
     parser.add_option("--overwrite", default=0, type="int", help="overwrite existing file (default=0)")
 
     (options, args) = parser.parse_args(argv)
-    if len(args) < 3:
+    if len(args) < 4:
         parser.print_help()
         return 1
 
-    return process(options, args[0], args[1], args[2])
+    return process(options, args[0], args[1], args[2], args[3])
 
 if __name__ == '__main__':
     sys.exit(main())
