@@ -5,6 +5,11 @@ import logging
 from constant import ROOT_PATH, PROGRESS, DEFAULT_FEAT,DEFAULT_POOLING
 from utils.bigfile import BigFile
 
+import sys
+sys.path.append("..")
+
+from utils.generic_utils import Progbar
+
 logger = logging.getLogger(__file__)
 logging.basicConfig(
     format="[%(asctime)s - %(filename)s:line %(lineno)s] %(message)s",
@@ -68,6 +73,7 @@ def process(options, collection):
     fw = open(res_binary_file, 'wb')
     videoset = []
 
+    pbar = Progbar(len(video2frames))
     for video_id, frame_id_list in video2frames.iteritems():
         renamed, vectors = feat_file.read(frame_id_list)
         name2vec = dict(zip(renamed, vectors))
@@ -80,6 +86,7 @@ def process(options, collection):
         video_vec = pooling_func(feat_matrix)
         video_vec.astype(np.float32).tofile(fw)
         videoset.append(video_id)
+        pbar.add(1)
     fw.close()
 
     fw = open(os.path.join(res_dir, 'id.txt'), 'w')

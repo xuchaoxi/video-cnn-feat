@@ -31,8 +31,9 @@ def process(options, collection):
     for imageFolder in imageFolders:
         for r,d,f in os.walk(imageFolder):
             for filename in f:
-                if int(filename.split('.')[0].split('_')[2]) % 4 != 0:   # generate frames every 4 frames for tgif
-                    continue
+                if collection == 'tgif':
+                    if int(filename.split('.')[0].split('_')[2]) % 4 != 0:   # generate frames every 4 frames for tgif
+                        continue
                 name,ext = os.path.splitext(filename)
                 if ext not in FILTER_SET:
                     continue

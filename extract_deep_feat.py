@@ -37,51 +37,19 @@ def get_feat_name(model_prefix, layer, oversample):
         feat = 'resnet-152_imagenet1k'
     return 'py%s,%s,os' % (feat,layer) if oversample else 'py%s,%s' % (feat, layer)
 
-def extract_mxnet_feat(fe_mod, im2path, sub_mean, oversample, logger, fw):
+def extract_mxnet_feat(fe_mod, imgid, impath, sub_mean, oversample):
 
-    success = 0
-    fail = 0
-    progbar = Progbar(len(im2path))
+    imid_list, features = extract_feature(fe_mod, 1, [imgid], [impath], 
+                                            sub_mean=sub_mean, oversample=oversample)
 
-    for i, (imgid,impath) in enumerate(im2path):
-        try:
-            imid_list, features = extract_feature(fe_mod, 1, [imgid], [impath], sub_mean=sub_mean, oversample=oversample)
-            for name, feat in zip(imid_list, features):
-                fw.write('%s %s\n' % (name, ' '.join(['%g'%x for x in feat])))
-            success += 1
-        except:
-            logger.error('failed to process %s', impath)
-            logger.info('%d success, %d fail', success, fail)
-            fail += 1
-        finally:
-            progbar.add(1)
+    return imid_list[0], features[0]
 
-        #if i%1e3 == 0:
-        #    logger.info('%d success, %d fail', success, fail)
-    return success, fail
-
-def extract_yt8m_feat(extractor, im2path, logger, fw):
+def extract_yt8m_feat(extractor, imgid, impath, *agrs):
     
-    success = 0
-    fail = 0
-    progbar = Progbar(len(im2path))
+    im = numpy.array(Image.open(impath))
+    features = extractor.extract_rgb_frame_features(im)
 
-    for i, (imgid, impath) in enumerate(im2path):
-        try:
-            im = numpy.array(Image.open(impath))
-            features = extractor.extract_rgb_frame_features(im)
-            fw.write('%s %s\n' % (imgid, ' '.join(['%g'%x for x in features])))
-            success += 1
-        except:
-            logger.error('failed to process %s', impath)
-            logger.info('%d success, %d fail', success, fail)
-            fail += 1
-        finally:
-            progbar.add(1)
-
-        #if i%1e3 == 0:
-        #    logger.info('%d success, %d fail', success, fail)
-    return success, fail
+    return imgid, features
 
 def process(options, collection):
     rootpath = options.rootpath
@@ -113,30 +81,45 @@ def process(options, collection):
 
     if model_prefix.find('inception-v3') > 0:
         fe_mod = YouTube8MFeatureExtractor()
+        feature_extractor = extract_yt8m_feat
     else:
         fe_mod = get_feat_extractor(model_prefix=model_prefix, gpuid=options.gpu, oversample=oversample)
+        feature_extractor = extract_mxnet_feat
 
     if not os.path.exists(feat_dir):
         os.makedirs(feat_dir)
 
     feat_file = os.path.join(feat_dir, 'id.feature.txt')
-    fw = open(feat_file,'w')
+    fail_fw = open(os.path.join(rootpath, collection, 'feature.fails.txt'), 'w')
+    fw = open(feat_file, 'w')
 
     im2path = zip(img_ids, filenames)
+    success = 0
+    fail = 0
 
     start_time = time.time()
     logger.info('%d images, %d done, %d to do', len(img_ids), 0, len(img_ids))
+    progbar = Progbar(len(im2path))
 
-    if model_prefix.find('inception-v3') >= 0:
-        success, fail = extract_yt8m_feat(fe_mod,  im2path, logger, fw)
-    else:
-        success, fail = extract_mxnet_feat(fe_mod, im2path, sub_mean, oversample, logger, fw)
+    for i, (imgid, impath) in enumerate(im2path):
+        try:
+            imid, features = feature_extractor(fe_mod, imgid, impath, sub_mean, oversample)
+            fw.write('%s %s\n' % (imid, ' '.join(['%g'%x for x in features])))
+            success += 1
+        except:
+            fail += 1
+            logger.error('failed to process %s', impath)
+            logger.info('%d success, %d fail', success, fail)
+            fail_fw.write('%s %s\n' % (imgid, impath))
+        finally:
+            progbar.add(1)
 
     logger.info('%d success, %d fail', success, fail)
     elapsed_time = time.time() - start_time
     logger.info('total running time %s', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
  
     fw.close()
+    fail_fw.close()
 
 
 def main(argv=None):
