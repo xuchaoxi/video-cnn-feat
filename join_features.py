@@ -38,11 +38,12 @@ def process(options, collection, featname, sub_collections, set_style):
         for collect in sub_collections:
             feat_dir = os.path.join(rootpath, collect, 'FeatureData', featname)
             featfile = BigFile(feat_dir)
-            renamed, vectors = featfile.readall()
+            #renamed, vectors = featfile.readall()
 
             print(">>> Process %s" % collect)
-            progbar = Progbar(len(renamed))
-            for name, feat in zip(renamed, vectors):
+            progbar = Progbar(len(featfile.names))
+            for name in featfile.names:
+                feat = featfile.read_one(name)
                 fw_feat.write('%s %s\n' % (name, ' '.join(['%g'%x for x in feat])))
                 progbar.add(1)
 
