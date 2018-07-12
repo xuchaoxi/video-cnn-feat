@@ -47,7 +47,7 @@ def process(options, collection, featname, sub_collections, set_style):
                 fw_feat.write('%s %s\n' % (name, ' '.join(['%g'%x for x in feat])))
                 progbar.add(1)
 
-            img_ids.extend(renamed)
+            img_ids.extend(featfile.names)
 
         fw_id.write(' '.join(img_ids))
 
