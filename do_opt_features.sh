@@ -2,10 +2,11 @@ rootpath=$HOME/VisualSearch
 set_style=ImageSets
 overwrite=1
 
-featname=pyresnext-101_rbps13k,flatten0_output,os
+#featname=pyresnext-101_rbps13k,flatten0_output,os
+featname=pyinception-v3,pool_3_reshape
 
-collection=tv2016test
-sub_collections=tv2016test1@tv2016test2
+collection=tgif
+sub_collections=tgif-tmp@tgifval
 
 if [ "$#" -lt 1 ]; then
     echo "Usage: $0 python_script"
@@ -14,9 +15,8 @@ fi
 
 BASEDIR=$(dirname "$0")
 
-python ${BASEDIR}/$1 $collection $featname ${sub_collections} \
+python ${BASEDIR}/$1 $collection $featname ${sub_collections} ${set_style} \
     --overwrite $overwrite \
-    --set_style ${set_style} \
     --rootpath $rootpath
 
 #IFS='@' read -r -a array <<< "${sub_collections}"

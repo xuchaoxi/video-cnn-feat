@@ -12,7 +12,6 @@ from constant import *
 from utils.generic_utils import Progbar
 from mxnet_feat_os2 import get_feat_extractor, extract_feature
 
-from feature_extractor import YouTube8MFeatureExtractor
 from PIL import Image
 import numpy
 
@@ -80,6 +79,7 @@ def process(options, collection):
     filenames = [x.split()[1] for x in data]
 
     if model_prefix.find('inception-v3') > 0:
+        from feature_extractor import YouTube8MFeatureExtractor
         fe_mod = YouTube8MFeatureExtractor()
         feature_extractor = extract_yt8m_feat
     else:

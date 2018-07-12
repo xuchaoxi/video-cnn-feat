@@ -5,9 +5,7 @@ import logging
 from constant import ROOT_PATH, PROGRESS, DEFAULT_FEAT,DEFAULT_POOLING
 from utils.bigfile import BigFile
 
-import sys
 sys.path.append("..")
-
 from utils.generic_utils import Progbar
 
 logger = logging.getLogger(__file__)

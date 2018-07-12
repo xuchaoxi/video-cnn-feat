@@ -2,7 +2,7 @@ import sys, os
 import logging
 from constant import ROOT_PATH
 
-FILTER_SET = set(str.split(".mp4"))
+FILTER_SET = set(str.split(".mp4 .gif"))
 
 logger = logging.getLogger(__file__)
 logging.basicConfig(
@@ -24,7 +24,7 @@ def process(options, collection):
             logger.info("%s exists. quit", resultfile)
             return 0
 
-    videoFolders = [os.path.join(rootpath, collection, 'VideoData')]
+    videoFolders = [os.path.join(rootpath, collection, 'GifData')]  # VideoData
     filenames = []
     videoset = set()
     
