@@ -105,6 +105,7 @@ def process(options, collection):
         try:
             imid, features = feature_extractor(fe_mod, imgid, impath, sub_mean, oversample)
             fw.write('%s %s\n' % (imid, ' '.join(['%g'%x for x in features])))
+            # fw.write('%s %s\n' % (imid, ' '.join(map(str, features))))
             success += 1
         except:
             fail += 1
