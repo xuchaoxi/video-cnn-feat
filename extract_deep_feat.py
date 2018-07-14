@@ -90,7 +90,7 @@ def process(options, collection):
         os.makedirs(feat_dir)
 
     feat_file = os.path.join(feat_dir, 'id.feature.txt')
-    fail_fw = open(os.path.join(rootpath, collection, 'feature.fails.txt'), 'w')
+    fails_id_path = []
     fw = open(feat_file, 'w')
 
     im2path = zip(img_ids, filenames)
@@ -110,7 +110,7 @@ def process(options, collection):
             fail += 1
             logger.error('failed to process %s', impath)
             logger.info('%d success, %d fail', success, fail)
-            fail_fw.write('%s %s\n' % (imgid, impath))
+            fails_id_path.append((imgid, impath))
         finally:
             progbar.add(1)
 
@@ -119,7 +119,11 @@ def process(options, collection):
     logger.info('total running time %s', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
  
     fw.close()
-    fail_fw.close()
+    if len(fails_id_path) > 0:
+        fail_fw = open(os.path.join(rootpath, collection, 'feature.fails.txt'), 'w')
+        for (imgid, impath) in fails_id_path:
+            fail_fw.write('%s %s\n' % (imgid, impath))
+        fail_fw.close()
 
 
 def main(argv=None):
