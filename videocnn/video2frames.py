@@ -41,10 +41,14 @@ def process(options, collection):
             os.makedirs(frame_output_dir)
 
         cap = cv2.VideoCapture(video_file)
-        length = int(cap.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT))
-        width  = int(cap.get(cv2.cv.CV_CAP_PROP_FRAME_WIDTH))
-        height = int(cap.get(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT))
-        fps = int(cap.get(cv2.cv.CV_CAP_PROP_FPS))
+        length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        width  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        fps = int(cap.get(cv2.CAP_PROP_FPS))
+        #length = int(cap.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT))
+        #width  = int(cap.get(cv2.cv.CV_CAP_PROP_FRAME_WIDTH))
+        #height = int(cap.get(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT))
+        #fps = int(cap.get(cv2.cv.CV_CAP_PROP_FPS))
         records[video_id] = (fps, length, width, height)
  
         flag = True
