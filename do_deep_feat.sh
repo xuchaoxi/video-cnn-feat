@@ -10,6 +10,8 @@ test_collection=$6
 model_prefix=$7
 mxmodel_dir=$8
 
+imgpath_file=$9
+
 if [ ! -d ${mxmodel_dir} ]; then
     echo "${mxmodel_dir} not found. CNN model not ready"
     exit
@@ -23,13 +25,14 @@ BASEDIR=$(dirname "$0")
 
 python ${BASEDIR}/generate_imagepath.py ${test_collection} --overwrite 0 --rootpath $rootpath
 imglistfile=$rootpath/${test_collection}/id.imagepath.txt
+imglistfile=$rootpath/${test_collection}/${imgpath_file}
 
 if [ ! -f $imglistfile ]; then
     echo "$imglistfile does not exist"
     exit
 fi
 
-python ${BASEDIR}/extract_deep_feat.py ${test_collection} --model_prefix ${model_prefix} --oversample $oversample --gpu ${gpu_id} --overwrite $overwrite --rootpath $rootpath
+python ${BASEDIR}/extract_deep_feat.py ${test_collection} --model_prefix ${model_prefix} --oversample $oversample --gpu ${gpu_id} --overwrite $overwrite --rootpath $rootpath  --imgpath_file ${imgpath_file}
 
 feat_dir=$rootpath/${test_collection}/FeatureData/$raw_feat_name
 feat_file=$feat_dir/id.feature.txt

@@ -53,10 +53,13 @@ def extract_yt8m_feat(extractor, imgid, impath, *agrs):
 def process(options, collection):
     rootpath = options.rootpath
     oversample = options.oversample
+    id_imgpath_file = options.imgpath_file
     model_prefix = os.path.join(rootpath, options.model_prefix)
     sub_mean = model_prefix.find('mxmodels80')>=0
     logger.info('subtract mean? %d', sub_mean)
-    layer = 'pool_3_reshape' if model_prefix.find('inception-v3')>=0 else 'flatten0_output' 
+    layer = 'pool_3_reshape' if model_prefix.find('inception-v3')>=0 else 'flatten0_output'
+    if 'crop' in id_imgpath_file:
+        layer += ',crop'
     if model_prefix.find('inception-v3')>=0:
         oversample = 0
     batch_size = 1 # change the batch size will get slightly different feature vectors. So stick to batch size of 1.
@@ -73,7 +76,7 @@ def process(options, collection):
             else:
                 logger.info('%s exists. overwrite', x)
 
-    id_path_file = os.path.join(rootpath, collection, 'id.imagepath.txt')
+    id_path_file = os.path.join(rootpath, collection, id_imgpath_file)
     data = map(str.strip, open(id_path_file).readlines())
     img_ids = [x.split()[0] for x in data]
     filenames = [x.split()[1] for x in data]
@@ -135,6 +138,7 @@ def main(argv=None):
     parser = OptionParser(usage="""usage: %prog [options] collection""")
     parser.add_option("--rootpath", default=ROOT_PATH, type="string", help="rootpath (default: %s)" % ROOT_PATH)
     parser.add_option("--overwrite", default=0, type="int", help="overwrite existing file (default=0)")
+    parser.add_option("--imgpath_file", default='id.imagepath.txt', type="string", help="file saved image id and image path")
     parser.add_option("--model_prefix", default=DEFAULT_MODEL_PREFIX, type="string", help=DEFAULT_MODEL_PREFIX)
     parser.add_option("--gpu", default=0, type="int", help="gpu id (default: 0)")
     parser.add_option("--oversample", default=1, type="int", help="oversample (default: 1)")

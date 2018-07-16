@@ -3,7 +3,9 @@ rootpath=$HOME/VisualSearch
 oversample=1
 overwrite=1
 
-raw_feat_name=pyresnext-101_rbps13k,flatten0_output
+raw_feat_name=pyresnext-101_rbps13k,flatten0_output,crop
+
+imgpath_file=id.imagepath.ImageData_crop.txt
 
 if [ "$#" -lt 1 ]; then
     echo "Usage: $0 test_collection [rootpath]"
@@ -19,5 +21,5 @@ if [ "$#" -gt 1 ]; then
     rootpath=$2
 fi
 
-./do_deep_feat.sh ${gpu_id} ${rootpath} ${oversample} ${overwrite} ${raw_feat_name} ${test_collection} ${model_prefix} ${mxmodel_dir}
+./do_deep_feat.sh ${gpu_id} ${rootpath} ${oversample} ${overwrite} ${raw_feat_name} ${test_collection} ${model_prefix} ${mxmodel_dir} ${imgpath_file}
 

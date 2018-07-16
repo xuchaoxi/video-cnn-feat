@@ -24,7 +24,7 @@ def process(options, collection):
             logger.info("%s exists. quit", resultfile)
             return 0
 
-    videoFolders = [os.path.join(rootpath, collection, 'GifData')]  # VideoData
+    videoFolders = [os.path.join(rootpath, collection, 'VideoData')]  # VideoData
     filenames = []
     videoset = set()
     
