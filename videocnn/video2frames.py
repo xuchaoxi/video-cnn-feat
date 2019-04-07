@@ -41,14 +41,16 @@ def process(options, collection):
             os.makedirs(frame_output_dir)
 
         cap = cv2.VideoCapture(video_file)
-        length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        width  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        fps = int(cap.get(cv2.CAP_PROP_FPS))
-        #length = int(cap.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT))
-        #width  = int(cap.get(cv2.cv.CV_CAP_PROP_FRAME_WIDTH))
-        #height = int(cap.get(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT))
-        #fps = int(cap.get(cv2.cv.CV_CAP_PROP_FPS))
+        if cv2.__version__.startswith('3'):
+            length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+            width  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+            height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            fps = int(cap.get(cv2.CAP_PROP_FPS))
+        else:
+            length = int(cap.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT))
+            width  = int(cap.get(cv2.cv.CV_CAP_PROP_FRAME_WIDTH))
+            height = int(cap.get(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT))
+            fps = int(cap.get(cv2.cv.CV_CAP_PROP_FPS))
         records[video_id] = (fps, length, width, height)
  
         flag = True
@@ -56,8 +58,8 @@ def process(options, collection):
         flag, frame = cap.read()
         while(flag):
             # Write the frame every 0.5 second
-            #if fcount % fps == 0 or fcount % fps == (fps/2):
-            if fcount % 6 == 0:     # Write the frame every 6 frame
+            if fcount % fps == 0 or fcount % fps == (fps/2):
+            #if fcount % 6 == 0:     # Write the frame every 6 frame
                 cv2.imwrite(os.path.join(frame_output_dir, '%s_%d.jpg'%(video_id, fcount)), frame)
                 total_frame_count += 1
             fcount += 1
