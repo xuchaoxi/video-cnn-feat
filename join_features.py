@@ -1,5 +1,5 @@
 '''
-join several sub collections' features into one large collection feature
+Join several sub collections' features into one large collection feature
 '''
 
 import os

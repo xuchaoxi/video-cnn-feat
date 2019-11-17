@@ -1,5 +1,5 @@
 '''
-concat several features (axis=1)
+Concat several features (axis=1)
 '''
 
 import os
@@ -36,28 +36,29 @@ def process(options, collection, featnames):
     target_feats_vec = {}
     img_ids = []
 
-    with open(target_feat_file, 'w') as fw_feat, open(target_id_file, 'w') as fw_id:
-        for feat in featnames:
-            logger.info('>>> Process %s...', feat)
-            feat_dir = os.path.join(rootpath, collection, 'FeatureData', feat)
-            featfile = BigFile(feat_dir)
-            renamed, vectors = featfile.readall()
+    featfiles = []
+    for i, feat in enumerate(featnames):
+        feat_dir = os.path.join(rootpath, collection, 'FeatureData', feat)
+        featfile = BigFile(feat_dir)
+        if i == 0:
+            img_ids = featfile.names
+        else:
+            assert len(img_ids) == len(featfile.names) and set(img_ids) == set(featfile.names), '%s not match target feature'%feat
+        featfiles.append(featfile)
 
-            if not target_feats_vec:
-                target_feats_vec = dict(zip(renamed, vectors))
-                img_ids = renamed
-                assert(len(img_ids) == len(set(img_ids))), '%s contain duplicated img ids'%feat
-            else:
-                assert(len(renamed) == len(img_ids) and set(img_ids) == set(renamed)), '%s not match target feature'%feat
-                for name, vec in zip(renamed, vectors):
-                    target_feats_vec[name].extend(vec)
+    with open(target_feat_file, 'w') as fw_feat, open(target_id_file, 'w') as fw_id:
+        progbar = Progbar(len(img_ids))
+        for im in img_ids:
+            target_feat_vec = []
+            for feat in featfiles:
+                vec = feat.read_one(im)
+                target_feat_vec.extend(vec)
+            fw_feat.write('%s %s\n' % (im, ' '.join(map(str, target_feat_vec))))
+            progbar.add(1)
 
         logger.info('>>> Save to %s', target_feat_dir)
         fw_id.write(' '.join(img_ids))
-        progbar = Progbar(len(target_feats_vec))
-        for name, feat in target_feats_vec.iteritems():
-            fw_feat.write('%s %s\n' % (name, ' '.join(['%g'%x for x in feat])))
-            progbar.add(1)
+
 
 def main(argv=None):
     if argv is None:

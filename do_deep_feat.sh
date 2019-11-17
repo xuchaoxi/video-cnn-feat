@@ -17,7 +17,7 @@ if [ ! -d ${mxmodel_dir} ]; then
     exit
 fi
 
-if [ "$oversample" == 1 ]; then
+if [ "$oversample" -eq 1 ]; then
     raw_feat_name=${raw_feat_name},os
 fi  
 
@@ -38,14 +38,6 @@ feat_dir=$rootpath/${test_collection}/FeatureData/$raw_feat_name
 feat_file=$feat_dir/id.feature.txt
 
 if [ -f ${feat_file} ]; then
-    python ${BASEDIR}/txt2bin.py 2048 $feat_file 0 $feat_dir --overwrite 1
+    python ${BASEDIR}/txt2bin.py 0 $feat_file 0 $feat_dir --overwrite 1
     rm $feat_file
 fi
-
-if [ ! -d ${feat_dir} ]; then
-    echo "$feat_dir does not exist"
-    exit
-fi
-
-#python ${BASEDIR}/norm_feat.py $feat_dir --overwrite $overwrite
-

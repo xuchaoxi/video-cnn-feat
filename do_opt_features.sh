@@ -1,12 +1,17 @@
-rootpath=$HOME/VisualSearch
+rootpath=$HOME/VisualSearch/activitynet
 set_style=ImageSets
-overwrite=1
+set_style=VideoSets
+overwrite=0
 
-#featname=pyresnext-101_rbps13k,flatten0_output,os
 featname=pyinception-v3,pool_3_reshape
+featname=pyresnext-101_rbps13k,flatten0_output,os
+featname=mean_pyresnext-101_rbps13k,flatten0_output,os
+featname=pyresnet-152_imagenet11k,flatten0_output,os
 
-collection=tgif
-sub_collections=tgif-tmp@tgifval
+collection=tgif-msrvtt10k-activitynet_vdc
+sub_collections=tgif-msrvtt10k@activitynet_vdc
+collection=activitynet
+sub_collections=data_0@data_1@data_2@data_3@data_4@data_5@data_6@data_7@data_8@data_9@data_10@data_11
 
 if [ "$#" -lt 1 ]; then
     echo "Usage: $0 python_script"
@@ -22,7 +27,7 @@ python ${BASEDIR}/$1 $collection $featname ${sub_collections} ${set_style} \
 #IFS='@' read -r -a array <<< "${sub_collections}"
 
 if [ $1 = split* ]; then
-    for collect in tv2016test1 tv2016test2
+    for collect in v3c1_sub
     do
         feat_dir=$rootpath/$collect/FeatureData/$featname
         feat_file=${feat_dir}/id.feature.txt

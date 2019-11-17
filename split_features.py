@@ -1,5 +1,5 @@
 '''
-split feature into several sub collections
+Split feature into several sub collections
 '''
 
 import sys
@@ -55,7 +55,7 @@ def main(argv=None):
         argv = sys.argv[1:]
 
     from optparse import OptionParser
-    parser = OptionParser(usage="""usage: %prog [options] collection featname [sub_collections]""")
+    parser = OptionParser(usage="""usage: %prog [options] collection featname sub_collections set_style""")
     parser.add_option("--rootpath", default=ROOT_PATH, type="string", help="rootpath (default: %s)" % ROOT_PATH)
     parser.add_option("--overwrite", default=0, type="int", help="overwrite existing file (default=0)")
 

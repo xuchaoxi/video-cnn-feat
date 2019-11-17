@@ -21,7 +21,7 @@ logging.basicConfig(
     datefmt='%d %b %H:%M:%S')
 logger.setLevel(logging.INFO)
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+#os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
 def get_feat_name(model_prefix, layer, oversample):
     if model_prefix.find('inception-v3')>=0:

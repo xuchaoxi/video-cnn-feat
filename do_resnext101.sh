@@ -1,11 +1,11 @@
 gpu_id=0  # set to -1 if gpu is not available
 rootpath=$HOME/VisualSearch
 oversample=1
-overwrite=1
+overwrite=0
 
-raw_feat_name=pyresnext-101_rbps13k,flatten0_output,crop
+raw_feat_name=pyresnext-101_rbps13k,flatten0_output
 
-imgpath_file=id.imagepath.ImageData_crop.txt
+imgpath_file=id.imagepath.txt
 
 if [ "$#" -lt 1 ]; then
     echo "Usage: $0 test_collection [rootpath]"

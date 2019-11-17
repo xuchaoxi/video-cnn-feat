@@ -37,6 +37,9 @@ def process(options, collection):
                 name,ext = os.path.splitext(filename)
                 if ext not in FILTER_SET:
                     continue
+
+                if collection.startswith('activitynet'):
+                    name = os.path.basename(r)+'_'+name
                     
                 if name in imageset:
                     print ("id %s exists, ignore %s" % (name, os.path.join(r,filename)))
