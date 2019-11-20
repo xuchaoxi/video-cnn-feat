@@ -32,31 +32,37 @@ Run `do_prepare.sh` to download pre-trained CNN models.
 
 ### Data
 
-Store videos into `VideoData` under collection folder and store images into `ImageData` if you have extracted frames from videos.
+Store videos into `VideoData` under collection folder and store images into `ImageData` if you have extracted frames from videos. Videos with `.mp4 .avi .webm` extention and gif are supported. Images should have `.jpg` extention.
 
 ### Step 1. Extract frames from videos
 
 ```
-collection_name=toydata
+collection=toydata
 source ~/cnn_feat/bin/activate
-cd videocnn
-python generate_videopath.py $collection_name
-python video2frames.py $collection_name
+./do_extract_frames.sh $collection
 ```
 
 ### Step 2. Extract frame-level CNN features
 
 ```
-collection_name=toydata
+collection=toydata
 source ~/cnn_feat/bin/activate
-./do_resnet152-11k.sh $collection_name
-./do_resnext101.sh $collection_name
+./do_resnet152-11k.sh $collection
+./do_resnext101.sh $collection
 ```
 
 ### Step 3. Obtain video-level CNN features
 ```
-collection_name=toydata
+collection=toydata
 source ~/cnn_feat/bin/activate
 ./do_feature_pooling $collection pyresnet-152_imagenet11k,flatten0_output,os
 ./do_feature_pooling $collection pyresnext-101_rbps13k,flatten0_output,os
+```
+
+### Step 4. Feature concatenation
+```
+collection=toydata
+source ~/cnn_feat/bin/activate
+featname=pyresnext-101_rbps13k,flatten0_output,os+pyresnet-152_imagenet11k,flatten0_output,os
+./do_concat_features.sh $collection $featname
 ```

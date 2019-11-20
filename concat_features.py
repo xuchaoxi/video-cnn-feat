@@ -5,6 +5,8 @@ Concat several features (axis=1)
 import os
 import sys
 import logging
+import numpy as np
+
 from constant import ROOT_PATH
 from utils.generic_utils import Progbar
 from utils.bigfile import BigFile
@@ -30,34 +32,41 @@ def process(options, collection, featnames):
     else:
         os.makedirs(target_feat_dir)
 
-    target_feat_file = os.path.join(target_feat_dir, 'id.feature.txt')
+    target_binary_file = os.path.join(target_feat_dir, 'feature.bin')
     target_id_file = os.path.join(target_feat_dir, 'id.txt')
 
-    target_feats_vec = {}
+    feat_dim = 0
     img_ids = []
-
     featfiles = []
+
     for i, feat in enumerate(featnames):
         feat_dir = os.path.join(rootpath, collection, 'FeatureData', feat)
         featfile = BigFile(feat_dir)
+        feat_dim += featfile.ndims
         if i == 0:
             img_ids = featfile.names
         else:
             assert len(img_ids) == len(featfile.names) and set(img_ids) == set(featfile.names), '%s not match target feature'%feat
         featfiles.append(featfile)
 
-    with open(target_feat_file, 'w') as fw_feat, open(target_id_file, 'w') as fw_id:
+    with open(target_binary_file, 'w') as fw:
         progbar = Progbar(len(img_ids))
         for im in img_ids:
             target_feat_vec = []
             for feat in featfiles:
                 vec = feat.read_one(im)
                 target_feat_vec.extend(vec)
-            fw_feat.write('%s %s\n' % (im, ' '.join(map(str, target_feat_vec))))
+            vec = np.array(target_feat_vec, dtype=np.float32)
+            vec.tofile(fw)
             progbar.add(1)
 
-        logger.info('>>> Save to %s', target_feat_dir)
-        fw_id.write(' '.join(img_ids))
+    with open(os.path.join(target_feat_dir, 'id.txt'), 'w') as fw:
+        fw.write(' '.join(img_ids))
+
+    with open(os.path.join(target_feat_dir, 'shape.txt'), 'w') as fw:
+        fw.write('%d %d' % (len(img_ids), feat_dim))
+
+    logger.info('%s: (%d, %d)', target_featname, len(img_ids), feat_dim)
 
 
 def main(argv=None):

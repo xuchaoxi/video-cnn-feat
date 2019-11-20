@@ -2,10 +2,10 @@ import sys, os
 import numpy as np
 import logging
 
-from constant import ROOT_PATH, PROGRESS, DEFAULT_FEAT,DEFAULT_POOLING
-from utils.bigfile import BigFile
+from constant import ROOT_PATH, PROGRESS, DEFAULT_FEAT, DEFAULT_POOLING
 
-sys.path.append("..")
+sys.path.extend([".", ".."])
+from utils.bigfile import BigFile
 from utils.generic_utils import Progbar
 
 logger = logging.getLogger(__file__)

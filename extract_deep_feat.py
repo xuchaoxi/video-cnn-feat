@@ -86,7 +86,7 @@ def process(options, collection):
             imid, features = extract_mxnet_feat(fe_mod, imgid, impath, sub_mean, oversample)
             fw.write('%s %s\n' % (imid, ' '.join(['%g'%x for x in features])))
             success += 1
-        except:
+        except Exception as e:
             fail += 1
             logger.error('failed to process %s', impath)
             logger.info('%d success, %d fail', success, fail)

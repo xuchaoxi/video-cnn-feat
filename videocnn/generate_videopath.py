@@ -2,7 +2,7 @@ import sys, os
 import logging
 from constant import ROOT_PATH
 
-FILTER_SET = set(str.split(".mp4 .gif"))
+FILTER_SET = set(str.split(".mp4 .avi .webm .gif"))
 
 logger = logging.getLogger(__file__)
 logging.basicConfig(
