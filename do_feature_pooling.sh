@@ -1,21 +1,20 @@
 overwrite=0
 rootpath=$HOME/VisualSearch
-feature=pyresnet-152_imagenet11k,flatten0_output,os
+
+#feature=pyresnet-152_imagenet11k,flatten0_output,os
 pooling=mean
 
-if [ "$#" -lt 1 ]; then
-    echo "Usage: $0 collection [rootpath]"
+if [ "$#" -lt 2 ]; then
+    echo "Usage: $0 collection feat_name [rootpath]"
     exit
 fi
 
-collection=$1
-
-if [ "$#" -gt 1 ]; then
-    rootpath=$2
+if [ "$#" -gt 2 ]; then
+    rootpath=$3
 fi
 
-python -m videocnn.feature_pooling $collection \
-    --overwrite $overwrite \
-    --rootpath $rootpath \
-    --feature $feature \
-    --pooling $pooling
+collection=$1
+feature=$2
+
+
+python videocnn/feature_pooling.py $collection --overwrite $overwrite --rootpath $rootpath --feature $feature --pooling $pooling
