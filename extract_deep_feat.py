@@ -63,6 +63,8 @@ def process(options, collection):
     filenames = [x.split()[1] for x in data]
 
     fe_mod = get_feat_extractor(model_prefix=model_prefix, gpuid=options.gpu, oversample=oversample)
+    if fe_mod is None:
+        return 0
 
     if not os.path.exists(feat_dir):
         os.makedirs(feat_dir)
