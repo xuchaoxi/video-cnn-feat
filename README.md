@@ -1,4 +1,4 @@
-# Deep CNN Feature by MxNet
+# Deep CNN Feature by MXNet
 
 ## Requirements
 
@@ -26,7 +26,6 @@ Run `do_prepare.sh` to download pre-trained CNN models.
 ```
 # Download resnet-152 model pre-trained on imagenet-11k
 ./do_prepare.sh
-
 ```
 
 ## Get started
@@ -35,7 +34,7 @@ Run `do_prepare.sh` to download pre-trained CNN models.
 
 Store videos into `VideoData` under collection folder and store images into `ImageData` if you have extracted frames from videos.
 
-### Extract frames from videos
+### Step 1. Extract frames from videos
 
 ```
 collection_name=toydata
@@ -45,11 +44,19 @@ python generate_videopath.py $collection_name
 python video2frames.py $collection_name
 ```
 
-### Extract CNN features
+### Step 2. Extract frame-level CNN features
 
 ```
 collection_name=toydata
 source ~/cnn_feat/bin/activate
 ./do_resnet152-11k.sh $collection_name
 ./do_resnext101.sh $collection_name
+```
+
+### Step 3. Obtain video-level CNN features
+```
+collection_name=toydata
+source ~/cnn_feat/bin/activate
+./do_feature_pooling $collection pyresnet-152_imagenet11k,flatten0_output,os
+./do_feature_pooling $collection pyresnext-101_rbps13k,flatten0_output,os
 ```
