@@ -65,7 +65,12 @@ def get_feat_extractor(model_prefix, gpuid=DEVICE_ID, batch_size=1, oversample=T
     model_prefix, epoch = get_epoch(model_prefix)
     layer = 'flatten0_output'
     batch_size = batch_size*10 if oversample else batch_size
-    sym, arg_params, aux_params = mx.model.load_checkpoint(model_prefix, epoch)
+    try:
+        sym, arg_params, aux_params = mx.model.load_checkpoint(model_prefix, epoch)
+    exception:
+        logger.error('Fail to load the model from %s', model_prefix)
+        return None
+    
     all_layers = sym.get_internals()
     fe_sym = all_layers[layer]
     if gpuid >= 0:
