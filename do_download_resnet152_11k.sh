@@ -1,4 +1,4 @@
-rootpath=$HOME/VisualSearch
+source common.ini
 
 mkdir -p ${rootpath}/mxnet_models/imagenet-11k/resnet-152
 cd ${rootpath}/mxnet_models/imagenet-11k/resnet-152
