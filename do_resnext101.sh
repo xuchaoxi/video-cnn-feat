@@ -14,7 +14,7 @@ fi
 
 test_collection=$1
 
-model_prefix=mxmodels80/resnext-101_rbps13k_step_3_aug_1_dist_3x2/resnext-101-1
+model_prefix=mxmodels80/resnext-101_rbps13k_step_3_aug_1_dist_3x2/resnext-101-1-0040
 mxmodel_dir=$rootpath/mxmodels80/resnext-101_rbps13k_step_3_aug_1_dist_3x2
 
 if [ "$#" -gt 1 ]; then

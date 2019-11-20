@@ -58,15 +58,11 @@ def preprocess_images(inputs, width=IMG_SIZE, height=IMG_SIZE, crop_dims=CROP_SI
     return Batch([input_])
 
 def get_epoch(model_prefix):
-    if model_prefix.find('resnext-101_rbps13k')>=0:
-        return 40
-    elif model_prefix.find('resnext-101_places2')>=0:
-        return 23
-    else:
-        return 0
+    model_prefix, epoch = model_prefix.rsplit('-', 1)
+    return model_prefix, int(epoch)
 
 def get_feat_extractor(model_prefix, gpuid=DEVICE_ID, batch_size=1, oversample=True):
-    epoch = get_epoch(model_prefix)
+    model_prefix, epoch = get_epoch(model_prefix)
     layer = 'flatten0_output'
     batch_size = batch_size*10 if oversample else batch_size
     sym, arg_params, aux_params = mx.model.load_checkpoint(model_prefix, epoch)
@@ -98,12 +94,10 @@ if __name__ == '__main__':
     model_prefix = os.path.join(ROOT_PATH, DEFAULT_MODEL_PREFIX)
     epoch = 0
 
-    model_prefix = os.path.join(ROOT_PATH, 'mxmodels80/resnext-101_rbps13k_step_3_aug_1_dist_3x2/resnext-101-1')
-    epoch = 40
+    sub_mean = False
     oversample = True
-    sub_mean = model_prefix.find('mxmodels80')>=0
 
-    model = get_feat_extractor(model_prefix, epoch, gpuid=-1, oversample=oversample)
+    model = get_feat_extractor(model_prefix, gpuid=-1, oversample=oversample)
     imset = str.split('COCO_train2014_000000042196')
     path_imgs = ['%s.jpg'%x for x in imset]
     _, features = extract_feature(model, 1, imset, path_imgs, sub_mean=sub_mean, oversample=oversample)

@@ -13,7 +13,7 @@ fi
 
 test_collection=$1
 
-model_prefix=mxnet_models/imagenet-11k/resnet-152/resnet-152
+model_prefix=mxnet_models/imagenet-11k/resnet-152/resnet-152-0000
 mxmodel_dir=$rootpath/mxnet_models/imagenet-11k/resnet-152
 
 if [ "$#" -gt 1 ]; then

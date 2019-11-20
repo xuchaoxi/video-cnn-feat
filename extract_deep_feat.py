@@ -2,18 +2,16 @@
 Weiyu Lan, Xirong Li, Jianfeng Dong, Fluency-Guided Cross-Lingual Image Captioning, ACM MM 2017
 '''
 
-import sys
 import os
+import sys
 import json
 import time
 import logging
 
 from constant import *
 from utils.generic_utils import Progbar
-from mxnet_feat_os2 import get_feat_extractor, extract_feature
+from mxnet_feat_os import get_feat_extractor, extract_feature
 
-from PIL import Image
-import numpy
 
 logger = logging.getLogger(__file__)
 logging.basicConfig(
@@ -21,20 +19,14 @@ logging.basicConfig(
     datefmt='%d %b %H:%M:%S')
 logger.setLevel(logging.INFO)
 
-#os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
 def get_feat_name(model_prefix, layer, oversample):
-    if model_prefix.find('inception-v3')>=0:
-        feat = 'inception-v3'
-    elif model_prefix.find('resnext-101_rbps13k')>=0:
+    if model_prefix.find('resnext-101_rbps13k')>=0:
         feat = 'resnext-101_rbps13k'
-    elif model_prefix.find('resnext-101_places2')>=0:
-        feat = 'resnext-101_places2'
-    elif model_prefix.find('11k')>=0:
-        feat = 'resnet-152_imagenet11k'
     else:
-        feat = 'resnet-152_imagenet1k'
+        feat = 'resnet-152_imagenet11k'
     return 'py%s,%s,os' % (feat,layer) if oversample else 'py%s,%s' % (feat, layer)
+
 
 def extract_mxnet_feat(fe_mod, imgid, impath, sub_mean, oversample):
 
@@ -43,25 +35,15 @@ def extract_mxnet_feat(fe_mod, imgid, impath, sub_mean, oversample):
 
     return imid_list[0], features[0]
 
-def extract_yt8m_feat(extractor, imgid, impath, *agrs):
-    
-    im = numpy.array(Image.open(impath))
-    features = extractor.extract_rgb_frame_features(im)
-
-    return imgid, features
 
 def process(options, collection):
     rootpath = options.rootpath
     oversample = options.oversample
     id_imgpath_file = options.imgpath_file
     model_prefix = os.path.join(rootpath, options.model_prefix)
-    sub_mean = model_prefix.find('mxmodels80')>=0
+    sub_mean = model_prefix.find('resnext-101_rbps13k')>=0
     logger.info('subtract mean? %d', sub_mean)
-    layer = 'pool_3_reshape' if model_prefix.find('inception-v3')>=0 else 'flatten0_output'
-    if 'crop' in id_imgpath_file:
-        layer += ',crop'
-    if model_prefix.find('inception-v3')>=0:
-        oversample = 0
+    layer = 'flatten0_output'
     batch_size = 1 # change the batch size will get slightly different feature vectors. So stick to batch size of 1.
     feat_name = get_feat_name(model_prefix, layer, oversample)
     feat_dir = os.path.join(rootpath, collection, 'FeatureData', feat_name)
@@ -81,13 +63,7 @@ def process(options, collection):
     img_ids = [x.split()[0] for x in data]
     filenames = [x.split()[1] for x in data]
 
-    if model_prefix.find('inception-v3') > 0:
-        from feature_extractor import YouTube8MFeatureExtractor
-        fe_mod = YouTube8MFeatureExtractor()
-        feature_extractor = extract_yt8m_feat
-    else:
-        fe_mod = get_feat_extractor(model_prefix=model_prefix, gpuid=options.gpu, oversample=oversample)
-        feature_extractor = extract_mxnet_feat
+    fe_mod = get_feat_extractor(model_prefix=model_prefix, gpuid=options.gpu, oversample=oversample)
 
     if not os.path.exists(feat_dir):
         os.makedirs(feat_dir)
@@ -106,9 +82,8 @@ def process(options, collection):
 
     for i, (imgid, impath) in enumerate(im2path):
         try:
-            imid, features = feature_extractor(fe_mod, imgid, impath, sub_mean, oversample)
+            imid, features = extract_mxnet_feat(fe_mod, imgid, impath, sub_mean, oversample)
             fw.write('%s %s\n' % (imid, ' '.join(['%g'%x for x in features])))
-            # fw.write('%s %s\n' % (imid, ' '.join(map(str, features))))
             success += 1
         except:
             fail += 1
@@ -149,7 +124,6 @@ def main(argv=None):
         return 1
     
     print json.dumps(vars(options), indent = 2)
-    #assert(options.job>=1 and options.numjobs >= options.job)
     
     return process(options, args[0])
 
