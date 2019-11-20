@@ -12,10 +12,12 @@ fi
 
 BASEDIR=$(dirname "$0")
 
+python ${BASEDIR}/generate_imagepath.py ${test_collection} --overwrite 0 --rootpath $rootpath
 imglistfile=$rootpath/${test_collection}/id.imagepath.txt
 
 if [ ! -f $imglistfile ]; then
-    python ${BASEDIR}/generate_imagepath.py ${test_collection} --overwrite 0 --rootpath $rootpath
+    echo "$imglistfile does not exist"
+    exit
 fi
 
 python ${BASEDIR}/extract_deep_feat.py ${test_collection} --model_prefix ${model_prefix} --oversample $oversample --gpu ${gpu_id} --overwrite $overwrite --rootpath $rootpath
