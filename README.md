@@ -24,25 +24,21 @@ deactivate
 Run `do_prepare.sh` to download pre-trained CNN models.
 
 ```
-# Download resnet-152 model pre-trained on imagenet-1k
-./do_prepare.sh 1k
-
 # Download resnet-152 model pre-trained on imagenet-11k
-./do_prepare.sh 11k
+./do_prepare.sh
 
-# Download inception-v3 model pre-trained on yt8m
-./do_prepare.sh v3
 ```
 
 ## Get started
 
 ### Data
 
-Store videos into the `VideoData` under collection folder and images into `ImageData` if you have extracted frames from videos.
+Store videos into `VideoData` under collection folder and store images into `ImageData` if you have extracted frames from videos.
 
 ### Extract frames from videos
 
 ```
+collection_name=toydata
 source ~/cnn_feat/bin/activate
 cd videocnn
 python generate_videopath.py $collection_name
@@ -52,8 +48,8 @@ python video2frames.py $collection_name
 ### Extract CNN features
 
 ```
+collection_name=toydata
 source ~/cnn_feat/bin/activate
 ./do_resnet152-11k.sh $collection_name
-./do_resnet152-1k.sh $collection_name
 ./do_resnext101.sh $collection_name
 ```

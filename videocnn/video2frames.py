@@ -59,7 +59,6 @@ def process(options, collection):
         while(flag):
             # Write the frame every 0.5 second
             if fcount % fps == 0 or fcount % fps == (fps/2):
-            #if fcount % 6 == 0:     # Write the frame every 6 frame
                 cv2.imwrite(os.path.join(frame_output_dir, '%s_%d.jpg'%(video_id, fcount)), frame)
                 total_frame_count += 1
             fcount += 1
