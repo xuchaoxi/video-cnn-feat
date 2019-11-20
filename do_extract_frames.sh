@@ -1,4 +1,4 @@
-rootpath=$HOME/VisualSearch
+source common.ini
 overwrite=0
 
 if [ "$#" -lt 1 ]; then
