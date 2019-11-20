@@ -1,5 +1,4 @@
-overwrite=0
-rootpath=$HOME/VisualSearch
+source common.ini
 
 #feature=pyresnet-152_imagenet11k,flatten0_output,os
 pooling=mean
