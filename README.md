@@ -76,3 +76,7 @@ python generate_imagepath.py $collection # this will generate id.imagepath.txt i
 featname=pyresnext-101_rbps13k,flatten0_output,os+pyresnet-152_imagenet11k,flatten0_output,os
 ./do_concat_features.sh $collection $featname
 ```
+
+# Acknowledgements
+
+This project was supported by the National Natural Science Foundation of China (No. 61672523).
