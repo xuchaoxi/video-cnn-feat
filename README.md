@@ -60,7 +60,6 @@ collection=toydata
 ### Step 2. Extract frame-level CNN features
 
 ```
-python generate_imagepath.py $collection # this will generate id.imagepath.txt if not found
 ./do_resnet152-11k.sh $collection
 ./do_resnext101.sh $collection
 ```
