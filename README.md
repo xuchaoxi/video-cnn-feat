@@ -28,6 +28,9 @@ deactivate
 ```
 # Download resnet-152 model pre-trained on imagenet-11k
 ./do_download_resnet152_11k.sh
+
+# Download resnet-152 model pre-trained on imagenet-1k
+./do_download_resnet152_1k.sh
 ```
 
 #### 2. ResNeXt-101 from MediaMill, University of Amsterdam
@@ -61,12 +64,14 @@ collection=toydata
 
 ```
 ./do_resnet152-11k.sh $collection
+./do_resnet152-1k.sh $collection
 ./do_resnext101.sh $collection
 ```
 
 ### Step 3. Obtain video-level CNN features (by mean pooling over frames)
 ```
 ./do_feature_pooling.sh $collection pyresnet-152_imagenet11k,flatten0_output,os
+./do_feature_pooling.sh $collection pyresnet-152_imagenet1k,flatten0_output,os
 ./do_feature_pooling.sh $collection pyresnext-101_rbps13k,flatten0_output,os
 ```
 
