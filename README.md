@@ -89,7 +89,7 @@ This project was supported by the National Natural Science Foundation of China (
 If you find the package useful, please consider citing our MM'19 paper:
 ```
 @inproceedings{li2019w2vv++,
-title={W2VV++ Fully Deep Learning for Ad-hoc Video Search},
+title={W2VV++: Fully Deep Learning for Ad-hoc Video Search},
 author={Li, Xirong and Xu, Chaoxi and Yang, Gang and Chen, Zhineng and Dong, Jianfeng},
 booktitle={Proceedings of the 27th ACM International Conference on Multimedia},
 pages={1786--1794},
